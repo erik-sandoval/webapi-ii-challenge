@@ -80,4 +80,28 @@ router.get("/:id", (req, res) => {
     });
 });
 
+router.put("/:id", (req, res) => {
+  const id = req.params.id;
+  const changes = req.body;
+  Posts.update(id, changes)
+    .then(data => {
+      res.status(201).json({ message: "successfully updated" });
+    })
+    .catch(err => {
+      res.status(500).json({ message: "could not update post." });
+    });
+});
+
+router.delete("/:id", (req, res) => {
+  const id = req.params.id;
+  console.log(id);
+  Posts.remove(id)
+    .then(data => {
+      res.status(200).json({ message: "successfully deleted" });
+    })
+    .catch(err => {
+      res.status(500).json({ message: "could not delete post." });
+    });
+});
+
 module.exports = router;
