@@ -35,9 +35,7 @@ router.get("/:id/comments", (req, res) => {
   const id = req.params.id;
   Posts.findCommentById(id)
     .then(data => {
-      console.log(data.length > 0);
       if (data.length > 0) {
-        console.log(data);
         res.status(200).json(data);
       } else {
         res.status(404).json({ message: "comment does not exist." });
@@ -51,10 +49,12 @@ router.get("/:id/comments", (req, res) => {
 router.post("/:id/comments", (req, res) => {
   const id = req.params.id;
   const comment = req.body;
+  comment.post_id = id;
+
   if (comment.text) {
     Posts.insertComment(comment)
       .then(data => {
-        res.status(201).json(data);
+        res.status(201).json({ message: "comment added successfully" });
       })
       .catch(err => {
         res.status(500).json({ message: "could not add comment." });
@@ -63,3 +63,21 @@ router.post("/:id/comments", (req, res) => {
     res.status(401).json({ message: "please input text." });
   }
 });
+
+// get post object, update and delete posts.
+router.get("/:id", (req, res) => {
+  const id = req.params.id;
+  Posts.findById(id)
+    .then(data => {
+      if (data) {
+        res.status(200).json(data);
+      } else {
+        res.status(404).json({ message: "post does not exist." });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: "could not get post." });
+    });
+});
+
+module.exports = router;
