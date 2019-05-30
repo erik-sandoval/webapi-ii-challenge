@@ -33,7 +33,7 @@ router.post("/", (req, res) => {
 // create a comment under a post id or view comments of a post id
 router.get("/:id/comments", (req, res) => {
   const id = req.params.id;
-  Posts.findCommentById(id)
+  Posts.findPostComments(id)
     .then(data => {
       if (data.length > 0) {
         res.status(200).json(data);
@@ -47,9 +47,11 @@ router.get("/:id/comments", (req, res) => {
 });
 
 router.post("/:id/comments", (req, res) => {
-  const id = req.params.id;
-  const comment = req.body;
-  comment.post_id = id;
+  
+  const comment = {
+    text: req.body.text,
+    post_id: req.params.id
+  };
 
   if (comment.text) {
     Posts.insertComment(comment)
